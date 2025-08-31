@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Flamme Rouge Stage Builder</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<!-- Download Modal -->
+<div id="dl-modal" class="dl-modal" hidden>
+  <div class="dl-sheet">
+    <!-- LEFT: options -->
+    <aside class="dl-left">
+      <h4>Export options</h4>
+
+      <label class="dl-field">
+        <span>Background</span>
+        <select id="dl-bg">
+          <option value="cream" selected>Cream</option>
+          <option value="white">White</option>
+          <option value="transparent">Transparent</option>
+        </select>
+      </label>
+
+      <!-- Stage Type (optional) -->
+      <label class="dl-check">
+        <input id="dl-type-enable" type="checkbox">
+        <span>Show stage type in banner</span>
+      </label>
+
+      <label class="dl-field">
+        <span>Type text</span>
+        <input id="dl-type-text" type="text" placeholder="e.g. Mountain" disabled>
+      </label>
+
+      <label class="dl-field">
+        <span>Type icon</span>
+        <select id="dl-type-icon" disabled>
+          <option value="">(none)</option>
+          <option value="🛣️">🛣️</option>
+          <option value="⛰️">⛰️</option>
+          <option value="🗻">🗻</option>
+        </select>
+      </label>
+
+      <!-- Black line option -->
+      <label class="dl-check">
+        <input id="dl-border" type="checkbox">
+        <span>Add thin black border</span>
+      </label>
+
+      <!-- Modules -->
+      <div class="dl-modules">
+        <h5>Modules</h5>
+        <label class="dl-check fixed"><input type="checkbox" checked disabled><span>The Stage</span></label>
+        <label class="dl-check fixed"><input type="checkbox" checked disabled><span>Stage Setup</span></label>
+        <label class="dl-check"><input id="dl-mod-profile" type="checkbox"><span>Stage Profile</span></label>
+        <label class="dl-check"><input id="dl-mod-points" type="checkbox"><span>Stage Points</span></label>
+        <label class="dl-check"><input id="dl-mod-stats" type="checkbox"><span>Stage Stats</span></label>
+      </div>
+
+      <div class="dl-actions">
+        <button id="dl-cancel">Cancel</button>
+        <button id="dl-download">Download PNG</button>
+      </div>
+    </aside>
+
+    <!-- RIGHT: live preview -->
+    <section class="dl-right">
+      <div class="dl-preview-frame">
+        <canvas id="dl-canvas"></canvas>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- BODY -->
+<body>
+  <header class="banner">Flamme Rouge Builder</header>
+
+<main class="layout">
+  <aside class="tile-picker" id="tile-picker">Loading tiles...</aside>
+
+  <section class="build-area-wrapper">
+    <div class="toolbar">
+      <button id="undo-btn">Undo</button>
+      <button id="reset-btn">Reset</button>
+      <button id="rotate-left-btn">⟲</button>
+      <button id="rotate-right-btn">⟳</button>
+      <button id="zoom-in-btn">＋</button>
+      <button id="zoom-out-btn">－</button>
+      <button id="fit-btn" title="Fit to screen">Fit</button>
+    </div>
+      <svg id="build-area" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4000 3000">
+        <g id="camera">
+          <g id="stage-root"></g>        <!-- tiles -->
+          <g id="label-layer"></g>       <!-- tile labels (stay upright) -->
+          <g id="checkpoint-layer"></g>  <!-- checkpoints go here -->
+        </g>
+      </svg>
+  </section>
+</main>
+
+<!-- New horizontal bar under the builder -->
+<div class="bottom-bar">
+  
+  <div class="checkpoints-box">
+    <h3>Stage name</h3>
+    <div class="stage-name-row">
+      <input id="stage-name" value="Custom Stage" />
+    </div>
+
+    <div class="checkpoint-divider"></div>
+
+    <h3>Checkpoints</h3>
+
+    <!-- Row 1 -->
+    <div class="cp-row-1">
+      <label class="cp-label-title" for="cp-label">Label:</label>
+      <input id="cp-label" maxlength="2" placeholder="A" />
+      <button id="cp-add-btn">Add checkpoint</button>
+    </div>
+
+    <!-- Row 2 -->
+    <div class="cp-row-2">
+      <div class="cp-swatches">
+        <button class="cp-swatch cp-red selected"   data-color="red"    title="Red"></button>
+        <button class="cp-swatch cp-green"          data-color="green"  title="Green"></button>
+        <button class="cp-swatch cp-blue"           data-color="blue"   title="Blue"></button>
+        <button class="cp-swatch cp-yellow"         data-color="yellow" title="Yellow"></button>
+      </div>
+      <button id="cp-remove-last-btn">Remove last</button>
+    </div>
+  </div>
+
+  <!-- Meta Information (replaces Stage Stats 1) -->
+  <div class="meta-box" id="meta-box">
+    <h3>Meta Information</h3>
+
+    <div class="meta-setup">
+      <span class="meta-setup-label">Stage Setup:</span>
+      <div id="setup-badges" class="setup-badges"></div>
+    </div>
+
+    <div class="meta-grid" id="meta-counters">
+      <div class="meta-card">
+        <span class="meta-name">Long</span>
+        <span class="meta-value" id="cnt-long">0</span>
+      </div>
+      <div class="meta-card">
+        <span class="meta-name">Medium</span>
+        <span class="meta-value" id="cnt-medium">0</span>
+      </div>
+      <div class="meta-card">
+        <span class="meta-name">Turns</span>
+        <span class="meta-value" id="cnt-turns">0</span>
+      </div>
+      <div class="meta-card">
+        <span class="meta-name">Total</span>
+        <span class="meta-value" id="cnt-total">0</span>
+      </div>
+      <div class="meta-card">
+        <span class="meta-name">Track</span>
+        <span class="meta-value" id="cnt-track">0</span>
+      </div>
+      <div class="meta-card">
+        <span class="meta-name">Racing</span>
+        <span class="meta-value" id="cnt-racing">0</span>
+      </div>
+    </div>
+
+    <div class="meta-divider"></div>
+
+    <div class="meta-actions">
+      <button id="btn-download" disabled title="Coming soon">Download stage</button>
+      <button id="btn-save" disabled title="Coming soon">Save stage</button>
+      <button id="btn-load" disabled title="Coming soon">Load stage</button>
+    </div>
+  </div>
+  
+  <div id="stage-profile" class="profile-panel">
+    <h3>Stage Profile</h3>
+    <!-- Inner, centered frame the profile must live inside -->
+    <div class="sp-frame">
+      <svg></svg>
+    </div>
+  </div>
+  
+  <!-- Stage Stats 2 -->
+  <div class="stats2-box" id="stats2-box">
+    <h3>Stage Stats</h3>
+
+    <div class="stats2-grid">
+      <div class="stats2-card">
+        <span class="stat-dot dot-flat"></span>
+        <span class="stat-name">Flat</span>
+        <span class="stat-count" id="cnt-flat">0</span>
+      </div>
+
+      <div class="stats2-card">
+        <span class="stat-dot dot-asc"></span>
+        <span class="stat-name">Ascents</span>
+        <span class="stat-count" id="cnt-asc">0</span>
+      </div>
+
+      <div class="stats2-card">
+        <span class="stat-dot dot-desc"></span>
+        <span class="stat-name">Descents</span>
+        <span class="stat-count" id="cnt-desc">0</span>
+      </div>
+
+      <div class="stats2-card">
+        <span class="stat-dot dot-supply"></span>
+        <span class="stat-name">Supply</span>
+        <span class="stat-count" id="cnt-supply">0</span>
+      </div>
+
+      <div class="stats2-card">
+        <span class="stat-dot dot-cobb"></span>
+        <span class="stat-name">Cobblestone</span>
+        <span class="stat-count" id="cnt-cobb">0</span>
+      </div>
+
+      <div class="stats2-card">
+        <span class="stat-dot dot-slip"></span>
+        <span class="stat-name">Slippery</span>
+        <span class="stat-count" id="cnt-slip">0</span>
+      </div>
+    </div>
+
+    <h3>Stage Points</h3>
+
+    <div class="points-grid">
+      <div class="points-card points-sprint">
+        <span class="points-icon" aria-hidden="true"></span>
+        <label for="inp-sprints" class="points-label">Sprint points</label>
+        <input id="inp-sprints" type="number" min="0" step="1" value="0" />
+      </div>
+
+      <div class="points-card points-kom">
+        <span class="points-icon" aria-hidden="true"></span>
+        <label for="inp-koms" class="points-label">KOM points</label>
+        <input id="inp-koms" type="number" min="0" step="1" value="0" />
+      </div>
+    </div>
+
+  </div> <!-- /stats2-box -->
+
+</div> <!-- /bottom-bar -->
+
+  <script src="script.js"></script>
+</body>
+</html>

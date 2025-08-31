@@ -1,0 +1,45 @@
+<svg width="402" height="128" viewBox="0 0 402 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="7-upp">
+<g id="vector-7-upp">
+<path d="M4 126C4 127.105 4.89543 128 6 128H386C387.105 128 388 127.105 388 126V2C388 0.895432 387.105 0 386 0H5.99999C4.89542 0 4 0.895432 4 2V126Z" fill="#8FD57D"/>
+<path d="M386 2V0H5.99999L6 2H386ZM386 126H6L5.99999 0L5.7959 0.0107422C4.78722 0.113001 4 0.964348 4 2V126C4 127.105 4.89543 128 6 128H386C387.105 128 388 127.105 388 126V2C388 0.895432 387.105 0 386 0V126Z" fill="black"/>
+<path d="M388 28H324V64H388V28Z" fill="#D9D9D9"/>
+<path d="M324 28V64H388V28H324ZM386 62H326V30H386V62Z" fill="white"/>
+<path d="M388 64H324V100H388V64Z" fill="#D9D9D9"/>
+<path d="M324 64V100H388V64H324ZM386 98H326V66H386V98Z" fill="white"/>
+<path d="M324 64H260V100H324V64Z" fill="#D9D9D9"/>
+<path d="M260 64V100H324V64H260ZM322 98H262V66H322V98Z" fill="white"/>
+<path d="M132 64H68V100H132V64Z" fill="#8C865B"/>
+<path d="M68 64V100H132V64H68ZM130 98H70V66H130V98Z" fill="white"/>
+<path d="M68 46H4V82H68V46Z" fill="#8C865B"/>
+<path d="M4 46V82H68V46H4ZM66 80H6V48H66V80Z" fill="white"/>
+<path d="M196 46H132V82H196V46Z" fill="#8C865B"/>
+<path d="M132 46V82H196V46H132ZM194 80H134V48H194V80Z" fill="white"/>
+<path d="M260 28H196V64H260V28Z" fill="#D9D9D9"/>
+<path d="M196 28V64H260V28H196ZM258 62H198V30H258V62Z" fill="white"/>
+<path d="M260 64H196V100H260V64Z" fill="#D9D9D9"/>
+<path d="M196 64V100H260V64H196ZM258 98H198V66H258V98Z" fill="white"/>
+<path d="M324 28H260V64H324V28Z" fill="#D9D9D9"/>
+<path d="M260 28V64H324V28H260ZM322 62H262V30H322V62Z" fill="white"/>
+<path d="M132 28H68V64H132V28Z" fill="#8C865B"/>
+<path d="M68 28V64H132V28H68ZM130 62H70V30H130V62Z" fill="white"/>
+</g>
+<circle id="goal-6b" cx="388" cy="28" r="4" fill="#FF7700"/>
+<circle id="goal-6" cx="388" cy="100" r="4" fill="#FF7700"/>
+<circle id="goal-5b" cx="324" cy="28" r="4" fill="#FF7700"/>
+<circle id="goal-5" cx="324" cy="100" r="4" fill="#FF7700"/>
+<circle id="goal-4b" cx="260" cy="28" r="4" fill="#FF7700"/>
+<circle id="goal-4" cx="260" cy="100" r="4" fill="#FF7700"/>
+<circle id="goal-3b" cx="196" cy="46" r="4" fill="#FF7700"/>
+<circle id="goal-3" cx="196" cy="82" r="4" fill="#FF7700"/>
+<circle id="goal-2b" cx="132" cy="28" r="4" fill="#FF7700"/>
+<circle id="goal-2" cx="132" cy="100" r="4" fill="#FF7700"/>
+<circle id="goal-1b" cx="68" cy="46" r="4" fill="#FF7700"/>
+<circle id="goal-1" cx="68" cy="82" r="4" fill="#FF7700"/>
+<circle id="exit-dir" cx="398" cy="64" r="4" fill="#00FF09"/>
+<circle id="exit-point" cx="388" cy="64" r="4" fill="#00FF09"/>
+<circle id="center-point" cx="196" cy="64" r="4" fill="#D500FF"/>
+<circle id="entry-dir" cx="14" cy="64" r="4" fill="#FF0000"/>
+<circle id="entry-point" cx="4" cy="64" r="4" fill="#FF0000"/>
+</g>
+</svg>

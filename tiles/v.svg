@@ -1,0 +1,61 @@
+<svg width="402" height="128" viewBox="0 0 402 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="v">
+<g id="vector-v">
+<path d="M386 0C387.105 0 388 0.895431 388 2V126C388 127.105 387.105 128 386 128H6C4.89543 128 4 127.105 4 126V2C4 0.895431 4.89543 3.22128e-08 6 0H386Z" fill="#8FD57D"/>
+<path d="M386 126V128H6V126H386ZM386 2H6V128C4.89543 128 4 127.105 4 126V2C4 0.895431 4.89543 3.22128e-08 6 0H386C387.105 0 388 0.895431 388 2V126C388 127.105 387.105 128 386 128V2Z" fill="black"/>
+<path d="M4 46H68V82H4V46Z" fill="#D9D9D9"/>
+<path d="M68 46V82H4V46H68ZM6 80H66V48H6V80Z" fill="white"/>
+<path d="M4 82H68V118H4V82Z" fill="#D9D9D9"/>
+<path d="M68 82V118H4V82H68ZM6 116H66V84H6V116Z" fill="white"/>
+<path d="M4 10H68V46H4V10Z" fill="#D9D9D9"/>
+<path d="M68 10V46H4V10H68ZM6 44H66V12H6V44Z" fill="white"/>
+<path d="M68 10H132V46H68V10Z" fill="#E6E142"/>
+<path d="M132 10V46H68V10H132ZM70 44H130V12H70V44Z" fill="white"/>
+<path d="M68 46H132V82H68V46Z" fill="#E6E142"/>
+<path d="M132 46V82H68V46H132ZM70 80H130V48H70V80Z" fill="white"/>
+<path d="M68 82H132V118H68V82Z" fill="#E6E142"/>
+<path d="M132 82V118H68V82H132ZM70 116H130V84H70V116Z" fill="white"/>
+<path d="M132 82H196V118H132V82Z" fill="#E6E142"/>
+<path d="M196 82V118H132V82H196ZM134 116H194V84H134V116Z" fill="white"/>
+<path d="M196 82H260V118H196V82Z" fill="#E6E142"/>
+<path d="M260 82V118H196V82H260ZM198 116H258V84H198V116Z" fill="white"/>
+<path d="M260 82H324V118H260V82Z" fill="#E6E142"/>
+<path d="M324 82V118H260V82H324ZM262 116H322V84H262V116Z" fill="white"/>
+<path d="M324 82H388V118H324V82Z" fill="#E6E142"/>
+<path d="M388 82V118H324V82H388ZM326 116H386V84H326V116Z" fill="white"/>
+<path d="M132 46H196V82H132V46Z" fill="#E6E142"/>
+<path d="M196 46V82H132V46H196ZM134 80H194V48H134V80Z" fill="white"/>
+<path d="M196 46H260V82H196V46Z" fill="#E6E142"/>
+<path d="M260 46V82H196V46H260ZM198 80H258V48H198V80Z" fill="white"/>
+<path d="M260 46H324V82H260V46Z" fill="#E6E142"/>
+<path d="M324 46V82H260V46H324ZM262 80H322V48H262V80Z" fill="white"/>
+<path d="M324 46H388V82H324V46Z" fill="#E6E142"/>
+<path d="M388 46V82H324V46H388ZM326 80H386V48H326V80Z" fill="white"/>
+<path d="M132 10H196V46H132V10Z" fill="#E6E142"/>
+<path d="M196 10V46H132V10H196ZM134 44H194V12H134V44Z" fill="white"/>
+<path d="M196 10H260V46H196V10Z" fill="#E6E142"/>
+<path d="M260 10V46H196V10H260ZM198 44H258V12H198V44Z" fill="white"/>
+<path d="M260 10H324V46H260V10Z" fill="#E6E142"/>
+<path d="M324 10V46H260V10H324ZM262 44H322V12H262V44Z" fill="white"/>
+<path d="M324 10H388V46H324V10Z" fill="#E6E142"/>
+<path d="M388 10V46H324V10H388ZM326 44H386V12H326V44Z" fill="white"/>
+</g>
+<circle id="goal-6b" cx="388" cy="10" r="4" fill="#FF7700"/>
+<circle id="goal-6" cx="388" cy="118" r="4" fill="#FF7700"/>
+<circle id="goal-5b" cx="324" cy="10" r="4" fill="#FF7700"/>
+<circle id="goal-5" cx="324" cy="118" r="4" fill="#FF7700"/>
+<circle id="goal-4b" cx="260" cy="10" r="4" fill="#FF7700"/>
+<circle id="goal-4" cx="260" cy="118" r="4" fill="#FF7700"/>
+<circle id="goal-3b" cx="196" cy="10" r="4" fill="#FF7700"/>
+<circle id="goal-3" cx="196" cy="118" r="4" fill="#FF7700"/>
+<circle id="goal-2b" cx="132" cy="10" r="4" fill="#FF7700"/>
+<circle id="goal-2" cx="132" cy="118" r="4" fill="#FF7700"/>
+<circle id="goal-1b" cx="68" cy="10" r="4" fill="#FF7700"/>
+<circle id="goal-1" cx="68" cy="118" r="4" fill="#FF7700"/>
+<circle id="exit-dir" cx="398" cy="64" r="4" fill="#00FF09"/>
+<circle id="exit-point" cx="388" cy="64" r="4" fill="#00FF09"/>
+<circle id="center-point" cx="196" cy="64" r="4" fill="#D500FF"/>
+<circle id="entry-dir" cx="14" cy="64" r="4" fill="#FF0000"/>
+<circle id="entry-point" cx="4" cy="64" r="4" fill="#FF0000"/>
+</g>
+</svg>

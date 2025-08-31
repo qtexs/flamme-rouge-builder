@@ -1,0 +1,307 @@
+[
+  {"id": "a", "file": "a.svg", "label": "a", "theme": "light",
+  "stats": {"flat":1,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["yellow", "yellow", "yellow", "yellow", "yellow", "flat"]
+  },
+  {"id": "a-upp", "file": "a-upp.svg", "label": "A", "theme": "dark",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["yellow", "yellow", "yellow", "yellow", "flat", "flat"]
+  },
+
+  {"id": "1", "file": "1.svg", "label": "1", "theme": "light",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["yellow", "yellow", "yellow", "yellow", "flat", "flat"]
+  },
+  {"id": "1-upp", "file": "1-upp.svg", "label": "1", "theme": "dark",
+  "stats": {"flat":1,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["yellow", "yellow", "yellow", "yellow", "yellow", "flat"]
+  },
+
+  {"id": "2", "file": "2.svg", "label": "2", "theme": "light",
+  "stats": {"flat":6,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat", "flat", "flat", "flat", "flat"]
+  },
+  {"id": "2-upp", "file": "2-upp.svg", "label": "2", "theme": "dark",
+  "stats": {"flat":6,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat", "flat", "flat", "flat", "flat"]
+  },
+
+  {"id": "9", "file": "9.svg", "label": "9", "theme": "light",
+  "stats": {"flat":1,"asc":0,"desc":0,"supply":2,"cobb":0,"slip":0},
+  "track": ["supply", "supply", "flat"]
+  },
+  {"id": "9-upp", "file": "9-upp.svg", "label": "9", "theme": "dark",
+  "stats": {"flat":3,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat", "flat"]
+  },
+
+  {"id": "b", "file": "bcdflmn.svg", "label": "b", "theme": "light",
+  "stats": {"flat":6,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat", "flat", "flat", "flat", "flat"]
+  },
+  {"id": "b-upp", "file": "b-upp.svg", "label": "B", "theme": "dark",
+  "stats": {"flat":2,"asc":0,"desc":4,"supply":0,"cobb":0,"slip":0},
+  "track": ["desc", "desc", "desc", "desc", "flat", "flat"]
+  },
+
+  {"id": "c", "file": "bcdflmn.svg", "label": "c", "theme": "light",
+  "stats": {"flat":6,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat", "flat", "flat", "flat", "flat"]
+  },
+  {"id": "c-upp", "file": "c-upp.svg", "label": "C", "theme": "dark",
+  "stats": {"flat":3,"asc":3,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat", "flat", "asc", "asc", "asc"]
+  },
+
+  {"id": "d", "file": "bcdflmn.svg", "label": "d", "theme": "light",
+  "stats": {"flat":6,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat", "flat", "flat", "flat", "flat"]
+  },
+  {"id": "d-upp", "file": "d-upp.svg", "label": "D", "theme": "dark",
+  "stats": {"flat":0,"asc":5,"desc":1,"supply":0,"cobb":0,"slip":0},
+  "track": ["asc", "asc", "asc", "asc", "asc", "desc"]
+  },
+
+  {"id": "e", "file": "egi-j-upp.svg", "label": "e", "theme": "light",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat"]
+  },
+  {"id": "e-upp", "file": "eg-upp.svg", "label": "E", "theme": "dark",
+  "stats": {"flat":0,"asc":2,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["asc", "asc"]
+  },
+
+  {"id": "f", "file": "bcdflmn.svg", "label": "f", "theme": "light",
+  "stats": {"flat":6,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat", "flat", "flat", "flat", "flat"]
+  },
+  {"id": "f-upp", "file": "f-upp.svg", "label": "F", "theme": "dark",
+  "stats": {"flat":3,"asc":0,"desc":3,"supply":0,"cobb":0,"slip":0},
+  "track": ["desc", "desc", "desc", "flat", "flat", "flat"]
+  },
+
+  {"id": "g", "file": "egi-j-upp.svg", "label": "g", "theme": "light",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat"]
+  },
+  {"id": "g-upp", "file": "eg-upp.svg", "label": "G", "theme": "dark",
+  "stats": {"flat":0,"asc":2,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["asc", "asc"]
+  },
+
+  {"id": "h", "file": "hqt-s-upp.svg", "label": "h", "theme": "light",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat"]
+  },
+  {"id": "h-upp", "file": "h-upp.svg", "label": "H", "theme": "dark",
+  "stats": {"flat":0,"asc":0,"desc":2,"supply":0,"cobb":0,"slip":0},
+  "track": ["desc", "desc"]
+  },
+
+  {"id": "i", "file": "egi-j-upp.svg", "label": "i", "theme": "light",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat"]
+  },
+  {"id": "i-upp", "file": "jop-i-upp.svg", "label": "I", "theme": "dark",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat"]
+  },
+
+  {"id": "j", "file": "jop-i-upp.svg", "label": "j", "theme": "light",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat"]
+  },
+  {"id": "j-upp", "file": "egi-j-upp.svg", "label": "J", "theme": "dark",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat"]
+  },
+
+  {"id": "k", "file": "krs-t-upp.svg", "label": "k", "theme": "light",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat"]
+  },
+  {"id": "k-upp", "file": "kr-upp.svg", "label": "K", "theme": "dark",
+  "stats": {"flat":0,"asc":2,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["asc", "asc"]
+  },
+
+  {"id": "l", "file": "bcdflmn.svg", "label": "l", "theme": "light",
+  "stats": {"flat":6,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat", "flat", "flat", "flat", "flat"]
+  },
+  {"id": "l-upp", "file": "l-upp.svg", "label": "L", "theme": "dark",
+  "stats": {"flat":0,"asc":3,"desc":3,"supply":0,"cobb":0,"slip":0},
+  "track": ["asc", "asc", "asc", "desc", "desc", "desc"]
+  },
+
+  {"id": "m", "file": "bcdflmn.svg", "label": "m", "theme": "light",
+  "stats": {"flat":6,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat", "flat", "flat", "flat", "flat"]
+  },
+  {"id": "m-upp", "file": "m-upp.svg", "label": "M", "theme": "dark",
+  "stats": {"flat":2,"asc":4,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat", "asc", "asc", "asc", "asc"]
+  },
+
+  {"id": "n", "file": "bcdflmn.svg", "label": "n", "theme": "light",
+  "stats": {"flat":6,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat", "flat", "flat", "flat", "flat"]
+  },
+  {"id": "n-upp", "file": "n-upp.svg", "label": "N", "theme": "dark",
+  "stats": {"flat":0,"asc":6,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["asc", "asc", "asc", "asc", "asc", "asc"]
+  },
+
+  {"id": "o", "file": "jop-i-upp.svg", "label": "o", "theme": "light",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat"]
+  },
+  {"id": "o-upp", "file": "o-upp.svg", "label": "O", "theme": "dark",
+  "stats": {"flat":0,"asc":2,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["asc", "asc"]
+  },
+
+  {"id": "p", "file": "jop-i-upp.svg", "label": "p", "theme": "light",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat"]
+  },
+  {"id": "p-upp", "file": "p-upp.svg", "label": "P", "theme": "dark",
+  "stats": {"flat":0,"asc":0,"desc":2,"supply":0,"cobb":0,"slip":0},
+  "track": ["desc", "desc"]
+  },
+
+  {"id": "q", "file": "hqt-s-upp.svg", "label": "q", "theme": "light",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat"]
+  },
+  {"id": "q-upp", "file": "q-upp.svg", "label": "Q", "theme": "dark",
+  "stats": {"flat":0,"asc":2,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["asc", "asc"]
+  },
+
+  {"id": "r", "file": "krs-t-upp.svg", "label": "r", "theme": "light",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat"]
+  },
+  {"id": "r-upp", "file": "kr-upp.svg", "label": "R", "theme": "dark",
+  "stats": {"flat":0,"asc":2,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["asc", "asc"]
+  },
+
+  {"id": "s", "file": "krs-t-upp.svg", "label": "s", "theme": "light",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat"]
+  },
+  {"id": "s-upp", "file": "hqt-s-upp.svg", "label": "S", "theme": "dark",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat"]
+  },
+
+  {"id": "t", "file": "hqt-s-upp.svg", "label": "t", "theme": "light",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat"]
+  },
+  {"id": "t-upp", "file": "krs-t-upp.svg", "label": "T", "theme": "dark",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat"]
+  },
+
+  {"id": "3", "file": "34.svg", "label": "3", "theme": "light",
+  "stats": {"flat":1,"asc":0,"desc":0,"supply":5,"cobb":0,"slip":0},
+  "track": ["supply", "supply", "supply", "supply", "supply", "flat"]
+  },
+  {"id": "3-upp", "file": "7-3-upp.svg", "label": "3", "theme": "dark",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":4,"slip":0},
+  "track": ["flat", "flat", "cobb", "cobb", "cobb", "cobb"]
+  },
+
+  {"id": "4", "file": "34.svg", "label": "4", "theme": "light",
+  "stats": {"flat":1,"asc":0,"desc":0,"supply":5,"cobb":0,"slip":0},
+  "track": ["supply", "supply", "supply", "supply", "supply", "flat"]
+  },
+  {"id": "4-upp", "file": "4-upp.svg", "label": "4", "theme": "dark",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":4,"slip":0},
+  "track": ["cobb", "cobb", "cobb", "cobb", "flat", "flat"]
+  },
+  
+  {"id": "5", "file": "5.svg", "label": "5", "theme": "light",
+  "stats": {"flat":0,"asc":0,"desc":0,"supply":0,"cobb":6,"slip":0},
+  "track": ["cobb", "cobb", "cobb", "cobb", "cobb", "cobb"]
+  },
+  {"id": "5-upp", "file": "5-upp.svg", "label": "5", "theme": "dark",
+  "stats": {"flat":4,"asc":0,"desc":0,"supply":0,"cobb":2,"slip":0},
+  "track": ["cobb", "cobb", "flat", "flat", "flat", "flat"]
+  },
+
+  {"id": "6", "file": "6.svg", "label": "6", "theme": "light",
+  "stats": {"flat":0,"asc":0,"desc":0,"supply":0,"cobb":6,"slip":0},
+  "track": ["cobb", "cobb", "cobb", "cobb", "cobb", "cobb"]
+  },
+  {"id": "6-upp", "file": "6-upp.svg", "label": "6", "theme": "dark",
+  "stats": {"flat":1,"asc":0,"desc":0,"supply":0,"cobb":5,"slip":0},
+  "track": ["cobb", "cobb", "cobb", "cobb", "cobb", "flat"]
+  },
+
+  {"id": "7", "file": "7-3-upp.svg", "label": "7", "theme": "light",
+  "stats": {"flat":2,"asc":0,"desc":0,"supply":0,"cobb":4,"slip":0},
+  "track": ["flat", "flat", "cobb", "cobb", "cobb", "cobb"]
+  },
+  {"id": "7-upp", "file": "7-upp.svg", "label": "7", "theme": "dark",
+  "stats": {"flat":3,"asc":0,"desc":0,"supply":0,"cobb":3,"slip":0},
+  "track": ["cobb", "cobb", "cobb", "flat", "flat", "flat"]
+  },
+
+  {"id": "8", "file": "8.svg", "label": "8", "theme": "light",
+  "stats": {"flat":3,"asc":0,"desc":0,"supply":0,"cobb":3,"slip":0},
+  "track": ["flat", "flat", "flat", "cobb", "cobb", "cobb"]
+  },
+  {"id": "8-upp", "file": "8-upp.svg", "label": "8", "theme": "dark",
+  "stats": {"flat":1,"asc":0,"desc":0,"supply":0,"cobb":5,"slip":0},
+  "track": ["cobb", "cobb", "cobb", "cobb", "cobb", "flat"]
+  },
+
+  {"id": "x", "file": "xy.svg", "label": "x", "theme": "light",
+  "stats": {"flat":6,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat", "flat", "flat", "flat", "flat"]
+  },
+  {"id": "x-upp", "file": "xy-upp.svg", "label": "X", "theme": "dark",
+  "stats": {"flat":6,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat", "flat", "flat", "flat", "flat"]
+  },
+
+  {"id": "y", "file": "xy.svg", "label": "y", "theme": "light",
+  "stats": {"flat":6,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat", "flat", "flat", "flat", "flat"]
+  },
+  {"id": "y-upp", "file": "xy-upp.svg", "label": "Y", "theme": "dark",
+  "stats": {"flat":6,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "flat", "flat", "flat", "flat", "flat"]
+  },
+
+  {"id": "z", "file": "z.svg", "label": "z", "theme": "light",
+  "stats": {"flat":3,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":3},
+  "track": ["flat", "flat", "slip", "slip", "slip", "flat"]
+  },
+  {"id": "z-upp", "file": "z-upp.svg", "label": "Z", "theme": "dark",
+  "stats": {"flat":3,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":3},
+  "track": ["flat", "flat", "slip", "slip", "slip", "flat"]
+  },
+
+  {"id": "u", "file": "u.svg", "label": "u", "theme": "light",
+  "stats": {"flat":1,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "yellow", "yellow", "yellow", "yellow", "yellow"]
+  },
+  {"id": "u-upp", "file": "u-upp.svg", "label": "U", "theme": "dark",
+  "stats": {"flat":0,"asc":2,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["asc", "asc", "yellow", "yellow", "yellow", "yellow"]
+  },
+
+  {"id": "v", "file": "v.svg", "label": "v", "theme": "light",
+  "stats": {"flat":1,"asc":0,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["flat", "yellow", "yellow", "yellow", "yellow", "yellow"]
+  },
+  {"id": "v-upp", "file": "v-upp.svg", "label": "V", "theme": "dark",
+  "stats": {"flat":0,"asc":2,"desc":0,"supply":0,"cobb":0,"slip":0},
+  "track": ["asc", "asc", "yellow", "yellow", "yellow", "yellow"]
+  }
+]

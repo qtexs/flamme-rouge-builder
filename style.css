@@ -1,0 +1,585 @@
+/* =========================================================
+   Flamme Rouge Builder — Global Styles
+   ========================================================= */
+
+/* Font */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap');
+
+/* -----------------------------
+   Theme tokens
+   ----------------------------- */
+:root{
+  /* Palette */
+  --fr-red:   #b22222;   /* banner / brand red */
+  --fr-cream: #f9f5e3;   /* aged paper */
+  --fr-black: #1a1a1a;   /* UI black */
+  --fr-grey:  #d0c9b6;   /* panel chrome */
+
+  /* Layout */
+  --bottom-panel-h: 220px;
+  --panel-title-h: 24px;
+  --btnH: 30px;
+  --btnFS: 14px;
+
+  /* Checkpoints UI */
+  --cp-inner-w: 260px;
+  --cp-btn-w:   130px;
+  --cp-swatch:  22px;
+
+  /* Meta “Stage Setup” badges (editable!) */
+  --badge-font-size: 12px;
+  --badge-pad-y: 3px;
+  --badge-pad-x: 2px;
+  --badge-radius: 0px;
+
+  /* Canvas export hint color */
+  --dl-banner-red: var(--fr-red);
+
+  /* Image smoothing hint (harmless elsewhere) */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: optimizeQuality;
+}
+
+/* -----------------------------
+   Base reset-ish
+   ----------------------------- */
+*,*::before,*::after{ box-sizing: border-box; }
+
+body{
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Oswald', sans-serif;
+  background: var(--fr-cream);
+  color: var(--fr-black);
+}
+
+/* =========================================================
+   Banner
+   ========================================================= */
+.banner{
+  padding: 1rem;
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--fr-cream);
+  background: var(--fr-red);
+  box-shadow: 0 2px 6px rgba(0,0,0,.25);
+}
+
+/* =========================================================
+   Main Layout
+   ========================================================= */
+.layout{
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* =========================================================
+   Tile Picker
+   ========================================================= */
+.tile-picker{
+  width: 320px;
+  padding: .5rem;
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: .5rem;
+  overflow-y: auto;
+  background: var(--fr-grey);
+  border-right: 3px solid var(--fr-black);
+}
+
+.tile-thumb{
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1/1;
+  padding: .25rem;
+  background: var(--fr-cream);
+  border: 2px solid var(--fr-black);
+  cursor: pointer;
+  transition: transform .1s ease;
+}
+.tile-thumb:hover{ transform: scale(1.05); }
+
+.tile-thumb svg{ width:100%; height:100%; object-fit: contain; }
+
+/* Thumb label + counter */
+.tile-label,
+.tile-counter{
+  position: absolute;
+  padding: 2px 2px;
+  font-size: 12px;
+  line-height: 1;
+  border-radius: 0;
+  font-weight: 600;
+  user-select: none;
+  pointer-events: none;
+}
+.tile-label{ left:6px; bottom:6px; }
+.tile-counter{
+  right:6px; bottom:6px;
+  background:#fff;
+  color:var(--fr-black);
+  border:1px solid rgba(0,0,0,.2);
+}
+
+.label-light{ background:#fff; color:var(--fr-black); border:1px solid rgba(0,0,0,.3); }
+.label-dark { background:var(--fr-black); color:#fff; border:1px solid rgba(255,255,255,.2); }
+
+/* =========================================================
+   Build Area (SVG stage)
+   ========================================================= */
+.build-area-wrapper{
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: var(--fr-cream);
+}
+#build-area{ width:100%; height:100%; display:block; }
+
+/* Ensure Oswald on live SVG (export injects its own style) */
+#build-area text, #build-area tspan{ font-family:'Oswald',sans-serif; }
+
+/* =========================================================
+   Toolbar (floating)
+   ========================================================= */
+.toolbar{
+  position:absolute;
+  top:15px; left:15px;
+  z-index:10;
+  display:flex; gap:6px;
+  padding:4px;
+  background:var(--fr-cream);
+  border:2px solid var(--fr-black);
+  border-radius:6px;
+  box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.toolbar button{
+  padding:.4rem .8rem;
+  border:none; border-radius:4px;
+  background:var(--fr-red);
+  color:var(--fr-cream);
+  font-weight:600;
+  cursor:pointer;
+  transition: background .2s ease;
+}
+.toolbar button:hover{ background:#a01b1b; }
+
+/* =========================================================
+   Bottom Bar (four panels)
+   ========================================================= */
+.bottom-bar{
+  display:flex;
+  gap:1rem;
+  align-items:stretch;
+  padding:.5rem;
+  background:var(--fr-grey);
+  border-top:3px solid var(--fr-black);
+}
+.bottom-bar>*{
+  min-height:var(--bottom-panel-h);
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start; /* align titles on a baseline */
+}
+.bottom-bar button:not(.cp-swatch){
+  height:var(--btnH);
+  font-size:var(--btnFS);
+  line-height:1;
+}
+.bottom-bar h3{
+  margin:0;
+  height:var(--panel-title-h);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1rem;
+  font-weight:700;
+  color:var(--fr-black);
+}
+
+/* =========================================================
+   Checkpoints Panel
+   ========================================================= */
+.checkpoints-box{
+  width:306px;
+  padding:.45rem .5rem .6rem;
+  display:flex;
+  flex-direction:column;
+  gap:.6rem;
+  background:var(--fr-cream);
+  border:2px solid var(--fr-black);
+}
+
+/* Constrain rows to a nice inner width and center them */
+.checkpoints-box .stage-name-row,
+.checkpoints-box .cp-row-1,
+.checkpoints-box .cp-row-2{
+  width:100%;
+  max-width:var(--cp-inner-w);
+  margin-inline:auto;
+}
+
+/* Stage name */
+.stage-name-row input#stage-name{
+  width:100%;
+  padding:.34rem .5rem;
+  border:1px solid var(--fr-black);
+  border-radius:4px;
+  background:#fff;
+  font-weight:600;
+}
+
+/* Divider */
+.checkpoint-divider{
+  width:min(100%, var(--cp-inner-w));
+  height:1px;
+  margin:12px auto 2px;
+  background:rgba(0,0,0,.18);
+}
+
+/* Row 1: label + input + Add button */
+.cp-row-1{
+  display:grid;
+  grid-template-columns:auto 64px var(--cp-btn-w);
+  align-items:center;
+  column-gap:.3rem;
+  row-gap:.4rem;
+}
+.cp-label-title{ font-size:14px; font-weight:600; line-height:1; margin-left:20px; }
+#cp-label{
+  width:4.5ch;
+  padding:.25rem .4rem;
+  border:1px solid var(--fr-black);
+  border-radius:4px;
+  font-weight:600;
+  text-transform:uppercase;
+}
+#cp-add-btn{
+  justify-self:end;
+  width:var(--cp-btn-w); height:var(--btnH); font-size:var(--btnFS);
+  padding:0 .6rem; border:1px solid var(--fr-black);
+  border-radius:4px; background:var(--fr-grey);
+  font-weight:600; cursor:pointer;
+}
+#cp-add-btn:hover{ background:#bfb8a3; }
+
+/* Row 2: swatches + Remove button */
+.cp-row-2{
+  display:grid;
+  grid-template-columns:1fr var(--cp-btn-w);
+  align-items:center;
+  column-gap:.5rem;
+}
+.cp-swatches{ display:flex; align-items:center; gap:.5rem; }
+.cp-swatch{
+  display:inline-block;
+  width:var(--cp-swatch);
+  aspect-ratio:1/1;
+  border-radius:50%;
+  border:2px solid var(--fr-cream);
+  outline:1px solid var(--fr-black);
+  cursor:pointer;
+}
+.cp-swatch.selected{ outline-width:2px; }
+.cp-red{ background:#f8333c; } .cp-green{ background:#6bbf59; }
+.cp-blue{ background:#00bbf9; } .cp-yellow{ background:#f5b700; }
+
+#cp-remove-last-btn{
+  justify-self:end;
+  width:var(--cp-btn-w); height:var(--btnH); font-size:var(--btnFS);
+  padding:0 .6rem; border:1px solid var(--fr-black);
+  border-radius:4px; background:var(--fr-grey);
+  font-weight:600; cursor:pointer;
+}
+#cp-remove-last-btn:hover{ background:#bfb8a3; }
+
+/* =========================================================
+   Meta Information Panel
+   ========================================================= */
+.meta-box{
+  flex:1;
+  display:flex; flex-direction:column; align-items:center;
+  gap:.4rem;
+  padding:.4rem .5rem .5rem;
+  background:var(--fr-cream);
+  border:2px solid var(--fr-black);
+}
+
+/* “Stage Setup: …” row + badges */
+.meta-setup{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  flex-wrap:wrap;
+}
+.meta-setup-label{ font-size:14px; font-weight:600; line-height:1; }
+
+/* Reusable badge (used here and anywhere else) */
+.badge{
+  display:inline-block;
+  font-family:Oswald, sans-serif;
+  font-weight:600;
+  font-size:var(--badge-font-size);
+  line-height:1;
+  padding:var(--badge-pad-y) var(--badge-pad-x);
+  border-radius:var(--badge-radius);
+  border:1px solid rgba(0,0,0,.25);
+  margin-right:2px;
+}
+
+/* Additional small badges row if you use it */
+.setup-badges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0px;   /* ← this controls space between badges */
+}
+
+.setup-badges .badge {
+  padding: 3px 3px;
+  font-size: 12px;
+  line-height: 1;
+  border-radius: 0;
+  font-weight: 600;
+  user-select: none;
+  pointer-events: none;
+  gap: 1px;
+}
+
+/* Meta counters grid */
+.meta-grid{
+  width:min(92%, 680px);
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:6px;
+}
+.meta-card{
+  display:flex; align-items:center; gap:.4rem;
+  padding:.45rem .6rem;
+  background:#fff; border:1px solid var(--fr-black); border-radius:4px;
+  font-size:14px; font-weight:600; min-height:36px;
+}
+.meta-value{
+  margin-left:auto; padding:0 .45rem; min-width:2.5ch; text-align:right;
+  background:#fff; border:1px solid rgba(0,0,0,.3); border-radius:2px; font-weight:700;
+}
+
+/* Divider */
+.meta-divider{
+  width:92%; height:1px;
+  margin:3px 0; background:rgba(0,0,0,.18);
+}
+
+/* Meta action buttons */
+.meta-actions{ display:flex; gap:.5rem; justify-content:center; }
+.meta-actions button{
+  padding:0 .6rem; border:1px solid var(--fr-black);
+  border-radius:4px; background:var(--fr-grey);
+  font-weight:600; cursor:pointer;
+}
+.meta-actions button[disabled]{ opacity:.6; cursor:not-allowed; }
+.meta-actions button:not([disabled]):hover{ background:#bfb8a3; }
+
+/* =========================================================
+   Stage Stats Panel
+   ========================================================= */
+.stats2-box{
+  flex:1;
+  display:flex; flex-direction:column; align-items:center;
+  gap:.35rem;
+  padding:.4rem .5rem .5rem;
+  background:var(--fr-cream);
+  border:2px solid var(--fr-black);
+}
+.stats2-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.stats2-card{
+  display:flex; align-items:center; gap:.4rem;
+  padding:.45rem .6rem;
+  background:#fff; border:1px solid var(--fr-black); border-radius:4px;
+  font-size:14px; font-weight:600; min-height:36px; margin-top:4px;
+}
+.stat-dot{
+  width:14px; height:14px; border:1px solid var(--fr-black);
+  border-radius:50%; margin-right:.4rem; vertical-align:middle;
+}
+.dot-flat{background:#d9d9d9;} .dot-asc{background:#ff0000;} .dot-desc{background:#6169ff;}
+.dot-supply{background:#7ccbf3;} .dot-cobb{background:#8c865b;} .dot-slip{background:#580dd8;}
+.stat-count{
+  margin-left:auto; padding:0 .45rem; min-width:2.5ch; text-align:right;
+  background:#fff; border:1px solid rgba(0,0,0,.3); border-radius:2px; font-weight:700;
+}
+
+/* Points cards (Sprint / KOM) */
+.points-grid{
+  width:min(92%, 680px);
+  display:grid; grid-template-columns:repeat(2,1fr);
+  gap:10px; margin-top:6px;
+}
+.points-card{
+  display:flex; align-items:center; gap:.5rem;
+  padding:.45rem .6rem;
+  background:#fff; border:1px solid var(--fr-black); border-radius:4px;
+  min-height:36px; font-size:14px; font-weight:600;
+}
+.points-icon{ width:16px; height:16px; border:1px solid var(--fr-black); border-radius:50%; display:inline-block; }
+.points-sprint .points-icon{ background:#6bbf59; }
+.points-kom .points-icon{
+  background:
+    radial-gradient(#f8333c 40%, transparent 41%) 0 0/6px 6px,
+    #fff;
+}
+.points-card input{
+  margin-left:auto; width:6.5ch; text-align:right;
+  padding:.2rem .3rem; border:1px solid var(--fr-black); border-radius:4px; font-weight:700; background:#fff;
+}
+
+/* =========================================================
+   Stage Profile Panel
+   ========================================================= */
+#stage-profile{
+  flex:1;
+  display:flex; flex-direction:column; align-items:center;
+  gap:.35rem;
+  padding:.4rem .5rem .5rem;
+  min-height:var(--bottom-panel-h);
+  background:var(--fr-cream);
+  border:2px solid var(--fr-black);
+}
+#stage-profile .sp-frame{
+  margin:0 auto;
+  width:min(92%, 920px);
+  height:calc(var(--bottom-panel-h) - (var(--panel-title-h) + 20px));
+  min-height:140px;
+  background:#f6f2df;
+  border:2px solid var(--fr-black);
+  position:relative;
+  overflow:hidden;
+  display:block;
+}
+#stage-profile .sp-frame svg{ width:100%; height:100%; display:block; overflow:visible; }
+
+.sp-text{ font-size:16px; fill:var(--fr-black); font-weight:500; }
+.sp-count{ font-size:13px; fill:#000; }
+.sp-check-dot{ stroke:#000; stroke-width:1; }
+
+/* =========================================================
+   Utilities / Helpers
+   ========================================================= */
+
+/* Hide helper markers inside SVGs (stage & picker) */
+#stage-root [id$="entry-point"],
+#stage-root [id$="exit-point"],
+#stage-root [id$="center-point"],
+#stage-root [id$="entry-dir"],
+#stage-root [id$="exit-dir"],
+#stage-root [id^="t"][id*="goal-"],
+.tile-picker [id$="entry-point"],
+.tile-picker [id$="exit-point"],
+.tile-picker [id$="center-point"],
+.tile-picker [id$="entry-dir"],
+.tile-picker [id$="exit-dir"],
+.tile-picker [id*="goal-"]{
+  opacity:0;
+  pointer-events:none;
+}
+
+/* =========================================================
+   Download Modal
+   ========================================================= */
+.dl-modal{
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.45);
+  display:grid; place-items:center;
+  z-index:9999;
+}
+/* attribute-driven visibility */
+.dl-modal[hidden]{ display:none !important; }
+.dl-modal:not([hidden]){ display:grid; }
+
+.dl-sheet{
+  width:min(1100px, 92vw);
+  height:min(80vh, 720px);
+  background:var(--fr-cream);
+  border:2px solid var(--fr-black);
+  display:grid;
+  grid-template-columns:320px 1fr;
+  gap:0;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+}
+.dl-left{
+  padding:14px;
+  background:#f1ecd9;
+  border-right:2px solid var(--fr-black);
+  display:grid;
+  grid-template-rows:auto auto auto auto 1fr auto;
+  gap:10px;
+}
+.dl-left h4{ margin:0 0 6px; }
+.dl-field{
+  display:grid; grid-template-columns:1fr 120px;
+  align-items:center; gap:8px; font-weight:600;
+}
+.dl-field input, .dl-field select{
+  padding:.25rem .4rem;
+  border:1px solid var(--fr-black);
+  background:#fff; border-radius:4px;
+}
+.dl-check{ display:flex; align-items:center; gap:8px; font-weight:600; }
+.dl-check.fixed{ opacity:.7; }
+.dl-modules h5{ margin:10px 0 6px; }
+.dl-actions{ display:flex; gap:8px; justify-content:flex-end; }
+.dl-actions button{
+  height:var(--btnH); font-size:var(--btnFS);
+  border:1px solid var(--fr-black);
+  background:var(--fr-grey);
+  border-radius:4px; font-weight:700; cursor:pointer;
+}
+.dl-actions button:hover{ background:#bfb8a3; }
+.dl-right{ display:grid; place-items:center; padding:12px; }
+.dl-preview-frame{
+  width:100%; height:100%;
+  background:#fff; border:2px dashed rgba(0,0,0,.2);
+  display:grid; place-items:center; overflow:auto;
+}
+#dl-canvas{ max-width:100%; height:auto; display:block; }
+
+/* Left side of the download modal */
+#dl-modal .dl-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;   /* align to the left edge */
+  justify-content: flex-start; /* push everything to top */
+  gap: 14px;                 /* uniform vertical spacing */
+  padding: 16px 18px;
+}
+
+/* Tighten labels/controls a bit */
+#dl-modal .dl-left label {
+  margin: 0;
+  font-weight: 600;
+}
+
+#dl-modal .dl-left input[type="text"],
+#dl-modal .dl-left select {
+  margin: 0;
+  height: 30px;
+  padding: 4px 8px;
+}
+
+/* For checkboxes list (Modules) */
+#dl-modal .dl-left .mods {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;          /* even small spacing between each checkbox */
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

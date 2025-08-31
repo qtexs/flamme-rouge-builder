@@ -1,0 +1,43 @@
+<svg width="214" height="360" viewBox="0 0 214 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="z-upp">
+<g id="vector-z-upp">
+<path d="M4 126C4 127.105 4.89543 128 6 128L116 128L116 232L70 232C68.8954 232 68 232.895 68 234L68 358C68 359.105 68.8954 360 70 360L212 360C212.069 360 212.137 359.996 212.204 359.989C213.146 359.894 213.894 359.146 213.989 358.204C213.996 358.137 214 358.069 214 358L214 2C214 0.964349 213.213 0.113005 212.204 0.0107422C212.137 0.00393694 212.069 0 212 0L6 0C4.89543 0 4 0.895431 4 2L4 126Z" fill="#8FD57D"/>
+<path d="M6 2L212 2L212 358L70 358L70 234H118L118 126L6 126L6 2ZM116 128L116 232L70 232C68.8954 232 68 232.895 68 234L68 358C68 359.105 68.8954 360 70 360L212 360C212.069 360 212.137 359.996 212.204 359.989C213.146 359.894 213.894 359.146 213.989 358.204C213.996 358.137 214 358.069 214 358L214 2C214 0.964349 213.213 0.113005 212.204 0.0107422C212.137 0.00393694 212.069 0 212 0L6 0C4.89543 0 4 0.895431 4 2L4 126C4 127.105 4.89543 128 6 128L116 128Z" fill="black"/>
+<path d="M79 28H4L4 64H79V28Z" fill="#D9D9D9"/>
+<path d="M4 28L4 64H79V28H4ZM77 62H6L6 30H77V62Z" fill="white"/>
+<path d="M79 64H4L4 100H79V64Z" fill="#D9D9D9"/>
+<path d="M4 64L4 100H79V64H4ZM77 98H6L6 66H77V98Z" fill="white"/>
+<path d="M183 214V146H147V214H183Z" fill="#580DD8"/>
+<path d="M183 146H147V214H183V146ZM149 212V148H181V212H149Z" fill="white"/>
+<path d="M183 332L183 214H147L147 332H183Z" fill="#580DD8"/>
+<path d="M183 214H147L147 332H183L183 214ZM149 330L149 216H181L181 330H149Z" fill="white"/>
+<path d="M183 146L183 28H147L147 146H183Z" fill="#580DD8"/>
+<path d="M183 28H147L147 146H183L183 28ZM149 144L149 30H181L181 144H149Z" fill="white"/>
+<path d="M183 28H79V64H165L183 28Z" fill="#D9D9D9"/>
+<path d="M79 28V64H165L183 28H79ZM163.764 62H81V30H179.764L163.764 62Z" fill="white"/>
+<path d="M165 64H79V100H147L165 64Z" fill="#D9D9D9"/>
+<path d="M79 64V100H147L165 64H79ZM145.748 98H81V66H161.304L145.748 98Z" fill="white"/>
+<path d="M164 296H68V332H181.5L164 296Z" fill="#D9D9D9"/>
+<path d="M68 296V332H181.5L164 296H68ZM178.304 330H70L70 298H162.748L178.304 330Z" fill="white"/>
+<path d="M147 260H68L68 296H164L147 260Z" fill="#D9D9D9"/>
+<path d="M68 260L68 296H164L147 260H68ZM160.844 294H70V262H145.732L160.844 294Z" fill="white"/>
+</g>
+<circle id="goal-6b" cx="68" cy="260" r="4" transform="rotate(-90 68 260)" fill="#FF7700"/>
+<circle id="goal-6" cx="68" cy="332" r="4" transform="rotate(-90 68 332)" fill="#FF7700"/>
+<circle id="goal-5b" cx="147" cy="260" r="4" transform="rotate(-90 147 260)" fill="#FF7700"/>
+<circle id="goal-5" cx="183" cy="332" r="4" transform="rotate(-90 183 332)" fill="#FF7700"/>
+<circle id="goal-4b" cx="147" cy="214" r="4" transform="rotate(-90 147 214)" fill="#FF7700"/>
+<circle id="goal-4" cx="183" cy="214" r="4" transform="rotate(-90 183 214)" fill="#FF7700"/>
+<circle id="goal-3b" cx="147" cy="146" r="4" transform="rotate(-90 147 146)" fill="#FF7700"/>
+<circle id="goal-3" cx="183" cy="146" r="4" transform="rotate(-90 183 146)" fill="#FF7700"/>
+<circle id="goal-2b" cx="147" cy="100" r="4" transform="rotate(-90 147 100)" fill="#FF7700"/>
+<circle id="goal-2" cx="183" cy="28" r="4" transform="rotate(-90 183 28)" fill="#FF7700"/>
+<circle id="goal-1b" cx="79" cy="100" r="4" transform="rotate(-90 79 100)" fill="#FF7700"/>
+<circle id="goal-1" cx="79" cy="28" r="4" transform="rotate(-90 79 28)" fill="#FF7700"/>
+<circle id="exit-dir" cx="58" cy="296" r="4" transform="rotate(-90 58 296)" fill="#00FF09"/>
+<circle id="exit-point" cx="68" cy="296" r="4" transform="rotate(-90 68 296)" fill="#00FF09"/>
+<circle id="center-point" cx="109" cy="180" r="4" transform="rotate(-90 109 180)" fill="#D500FF"/>
+<circle id="entry-dir" cx="14" cy="64" r="4" transform="rotate(-90 14 64)" fill="#FF0000"/>
+<circle id="entry-point" cx="4" cy="64" r="4" transform="rotate(-90 4 64)" fill="#FF0000"/>
+</g>
+</svg>

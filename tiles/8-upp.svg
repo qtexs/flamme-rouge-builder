@@ -1,0 +1,41 @@
+<svg width="402" height="128" viewBox="0 0 402 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="8-upp">
+<g id="vector-8-upp">
+<path d="M4 2C4 0.895431 4.89543 0 6 0H386C387.105 0 388 0.895431 388 2V126C388 127.105 387.105 128 386 128H5.99999C4.89542 128 4 127.105 4 126V2Z" fill="#8FD57D"/>
+<path d="M386 126V128H5.99999L6 126H386ZM386 2H6L5.99999 128L5.7959 127.989C4.78722 127.887 4 127.036 4 126V2C4 0.895431 4.89543 0 6 0H386C387.105 0 388 0.895431 388 2V126C388 127.105 387.105 128 386 128V2Z" fill="black"/>
+<path d="M388 100H324V64H388V100Z" fill="#D9D9D9"/>
+<path d="M324 100V64H388V100H324ZM386 66H326V98H386V66Z" fill="white"/>
+<path d="M388 64H324V28H388V64Z" fill="#D9D9D9"/>
+<path d="M324 64V28H388V64H324ZM386 30H326V62H386V30Z" fill="white"/>
+<path d="M68 82H4V46H68V82Z" fill="#8C865B"/>
+<path d="M4 82V46H68V82H4ZM66 48H6V80H66V48Z" fill="white"/>
+<path d="M196 100H132V64H196V100Z" fill="#8C865B"/>
+<path d="M132 100V64H196V100H132ZM194 66H134V98H194V66Z" fill="white"/>
+<path d="M196 64H132V28H196V64Z" fill="#8C865B"/>
+<path d="M132 64V28H196V64H132ZM194 30H134V62H194V30Z" fill="white"/>
+<path d="M260 82H196V46H260V82Z" fill="#8C865B"/>
+<path d="M196 82V46H260V82H196ZM258 48H198V80H258V48Z" fill="white"/>
+<path d="M324 82H260V46H324V82Z" fill="#8C865B"/>
+<path d="M260 82V46H324V82H260ZM322 48H262V80H322V48Z" fill="white"/>
+<path d="M132 82H68V46H132V82Z" fill="#8C865B"/>
+<path d="M68 82V46H132V82H68ZM130 48H70V80H130V48Z" fill="white"/>
+</g>
+<circle id="goal-6b" cx="388" cy="28" r="4" fill="#FF7700"/>
+<circle id="goal-6" cx="388" cy="100" r="4" fill="#FF7700"/>
+<circle id="goal-5b" cx="324" cy="46" r="4" fill="#FF7700"/>
+<circle id="goal-5" cx="324" cy="82" r="4" fill="#FF7700"/>
+<circle id="goal-4b" cx="260" cy="46" r="4" fill="#FF7700"/>
+<circle id="goal-4" cx="260" cy="82" r="4" fill="#FF7700"/>
+<circle id="goal-3b" cx="196" cy="28" r="4" fill="#FF7700"/>
+<circle id="goal-3" cx="196" cy="100" r="4" fill="#FF7700"/>
+<circle id="goal-2b" cx="132" cy="46" r="4" fill="#FF7700"/>
+<circle id="goal-2" cx="132" cy="82" r="4" fill="#FF7700"/>
+<circle id="goal-1b" cx="68" cy="46" r="4" fill="#FF7700"/>
+<circle id="goal-1" cx="68" cy="82" r="4" fill="#FF7700"/>
+<circle id="exit-dir" cx="398" cy="64" r="4" fill="#00FF09"/>
+<circle id="exit-point" cx="388" cy="64" r="4" fill="#00FF09"/>
+<circle id="center-point" cx="196" cy="64" r="4" fill="#D500FF"/>
+<circle id="entry-dir" cx="14" cy="64" r="4" fill="#FF0000"/>
+<circle id="entry-point" cx="4" cy="64" r="4" fill="#FF0000"/>
+</g>
+</svg>
