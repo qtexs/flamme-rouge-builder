@@ -4,6 +4,7 @@ Flamme rouge builder website
 Shout-out to Asger Harding Granerud for creating this beautiful game, and to the creator of the Flamme Rouge Companion app, which has been my inspiration for going about this.
 
 Troubleshooting
+
 This is a fan-made project I mostly created for myself, and I don’t have any experience hosting websites. If you run into problems, try opening it in Google Chrome and/or on a screen with higher resolution.
 
 The site should be fairly intuitive, but here’s a quick guide:
