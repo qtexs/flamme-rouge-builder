@@ -22,7 +22,7 @@ Planned features in decreasing priority, no plan planned timeline here, just whe
 3) Add an "Auto Rotate" toggle so that the last placed tile exit point always points to the right.
 4) Enable "Save Stage" and "Load Stage" buttons so one can safe a json file of the stage which can be loaded later if one wants to continue, change or share it.
 5) Make the website usable on mobile.
-6) Add an upload tile feature, not sure about this one. Mabye I upload a templet for the tiles from Figma then one can create and upload own made svg files of tiles.
+6) Add an upload tile feature. I’m not sure about this one, maybe I could provide a template for tiles from Figma, and then people could create and upload their own custom SVG tile files in the website.
 
 Disclaimer
 
