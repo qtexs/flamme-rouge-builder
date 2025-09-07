@@ -170,6 +170,19 @@ body{
 }
 .toolbar button:hover{ background:#a01b1b; }
 
+#auto-rotate-btn.active{
+  background: var(--btn-hover-bg, #831616);
+}
+
+/* subtle highlight for the selected tile to replace */
+.selection-outline {
+  fill: none;
+  stroke: #ffeb3b;
+  stroke-width: 7;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
 /* =========================================================
    Bottom Bar (four panels)
    ========================================================= */
