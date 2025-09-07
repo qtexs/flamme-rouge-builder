@@ -12,6 +12,7 @@ const stageRoot  = document.getElementById("stage-root");
 
 const labelLayer      = document.getElementById("label-layer");
 const checkpointLayer = document.getElementById("checkpoint-layer");
+const overlayLayer = document.getElementById("overlay-layer");
 
 // Toolbar / actions
 const undoBtn  = document.getElementById("undo-btn");
@@ -42,9 +43,16 @@ let placed = [];                // { g, prefix, tx, ty, rot, socket, goals, labe
 let nextId = 1;
 let cameraRotation = 0;         // degrees
 let manualZoom = 1;
+// keep current scene scale (used to clamp non-chunky checkpoint strokes)
+let _stageScale = 1;
+
+let autoRotateOn = false;
+let autoRotateBtn = null;
+let removeAutoRotateListener = null; // unsubscribe handle from Stage.onChange
 
 let tileCounts = {};            // { baseId: count }
 let tileCounterEls = {};        // { id: counterElement }
+let tileRegistry = {}; // { [id]: { svgText, meta } }
 
 let checkpoints = [];
 let cpPickMode = false;
@@ -53,6 +61,11 @@ let cpPending = { color: "red", label: "A" }; // defaults
 // Optional values (reserved for future)
 let stageSprintPoints = 0;
 let stageKOMPoints    = 0;
+
+// --- Replace mode state ---
+let replaceMode = false;
+let replaceTargetIndex = null;
+let replaceBtn = null;
 
 // --- Download modal init guard ---
 let _dlInited = false;
@@ -105,6 +118,77 @@ async function init() {
   const rotR = document.getElementById("rotate-right-btn");
   const zoomIn = document.getElementById("zoom-in-btn");
   const zoomOut = document.getElementById("zoom-out-btn");
+  replaceBtn = document.getElementById("replace-btn");
+
+  const saveBtn = document.getElementById("btn-save");
+  const loadBtn = document.getElementById("btn-load");
+
+  if (saveBtn) {
+    saveBtn.addEventListener("click", onSaveStage);
+    // enable now; we’ll keep it updated below
+    saveBtn.removeAttribute("disabled");
+    saveBtn.title = "";
+  }
+
+  if (loadBtn) {
+    loadBtn.addEventListener("click", onLoadStageClick);
+    // Load is always allowed
+    loadBtn.removeAttribute("disabled");
+    loadBtn.title = "";
+  }
+
+  // keep Save enabled only when there’s something to save
+  function updateSaveLoadEnabled() {
+    if (!saveBtn) return;
+    const nothingToSave = placed.length === 0 && checkpoints.length === 0;
+    if (nothingToSave) {
+      saveBtn.setAttribute("disabled", "disabled");
+      saveBtn.title = "Place a tile or add a checkpoint to enable saving";
+    } else {
+      saveBtn.removeAttribute("disabled");
+      saveBtn.title = "";
+    }
+  }
+
+  // Replace
+  if (replaceBtn) {
+    replaceBtn.addEventListener("click", () => {
+      // toggle mode
+      if (replaceMode) {
+        exitReplaceMode();
+      } else {
+        // cancel checkpoint-pick mode if it was on
+        if (cpPickMode) {
+          cpPickMode = false;
+          svgStage.style.cursor = "default";
+        }
+        replaceMode = true;
+        replaceBtn.classList.add("active");
+        svgStage.style.cursor = "copy";
+      }
+    });
+  }
+
+  window.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+
+    // Cancel checkpoint placement, if active
+    if (cpPickMode) {
+      cpPickMode = false;
+      svgStage.style.cursor = "default";
+      e.preventDefault();
+      return; // stop here so we don't also touch replaceMode in the same press
+    }
+
+    // Cancel replace mode, if active
+    if (replaceMode) {
+      if (replaceTargetIndex != null) {
+        removeSelectionOutline(placed[replaceTargetIndex]);
+      }
+      exitReplaceMode();
+      e.preventDefault();
+    }
+  });
 
   if (rotL)   rotL.addEventListener("click", () => rotateCamera(-15));
   if (rotR)   rotR.addEventListener("click", () => rotateCamera( 15));
@@ -148,6 +232,17 @@ async function init() {
     resetBtn.addEventListener("click", () => {
       if (!confirm("Reset stage? This removes all tiles and checkpoints.")) return;
 
+      if (replaceMode) {
+        if (replaceTargetIndex != null && placed[replaceTargetIndex]) {
+          removeSelectionOutline(placed[replaceTargetIndex]);
+        }
+        exitReplaceMode(); // clears state, cursor, button active class
+      }
+      if (cpPickMode) {
+        cpPickMode = false;
+        svgStage.style.cursor = "default";
+      }
+
       placed.forEach(p => p.g.remove());
       placed.length = 0;
       labelLayer.innerHTML = "";
@@ -170,6 +265,35 @@ async function init() {
     });
   }
 
+  // Auto-rotate
+  autoRotateBtn = document.getElementById("auto-rotate-btn");
+
+  if (autoRotateBtn) {
+    const enable = () => {
+      if (autoRotateOn) return;
+      autoRotateOn = true;
+      autoRotateBtn.classList.add("active");
+
+      // Re-apply whenever the stage changes
+      removeAutoRotateListener = Stage.onChange(() => applyAutoRotate());
+
+      // Snap immediately
+      applyAutoRotate();
+    };
+
+    const disable = () => {
+      if (!autoRotateOn) return;
+      autoRotateOn = false;
+      autoRotateBtn.classList.remove("active");
+      if (removeAutoRotateListener) { removeAutoRotateListener(); removeAutoRotateListener = null; }
+      // Leave camera where it is; user can rotate/zoom manually again
+    };
+
+    autoRotateBtn.addEventListener("click", () => {
+      if (autoRotateOn) disable(); else enable();
+    });
+  }
+
   // CP label input
   const cpLabelInput = document.getElementById("cp-label");
   cpLabelInput.value = "A";
@@ -187,13 +311,29 @@ async function init() {
   });
   document.getElementById("cp-remove-last-btn").addEventListener("click", removeLastCheckpoint);
 
-  svgStage.addEventListener("click", onStageClickForCheckpoint);
+  svgStage.addEventListener("click", onStageClickForCheckpoint); // existing
+
+  svgStage.addEventListener("click", (e) => {
+    if (!replaceMode || replaceTargetIndex !== null) return;
+    const g = e.target.closest('g[data-prefix]');
+    if (!g) return;
+    const idx = placed.findIndex(p => p.prefix === g.getAttribute("data-prefix"));
+    if (idx < 0) return;
+
+    replaceTargetIndex = idx;
+    // visual cue
+    placed[idx].g.classList.add("replace-target");
+    addSelectionOutline(placed[idx]);
+  });
+
   ensureCheckpointHaloFilter();
 
   // Re-render hooks
   Stage.onChange(renderMetaFromStage);
   Stage.onChange(renderStats2FromStage);
   Stage.onChange(renderStageProfile);
+  Stage.onChange(updateSaveLoadEnabled);
+  updateSaveLoadEnabled();
   Stage.emit(); // initial paint
   setupDownloadModal();
 }
@@ -257,6 +397,9 @@ function updateCamera() {
     `translate(${VW/2}, ${VH/2}) rotate(${cameraRotation}) scale(${scale}) translate(${-rcx}, ${-rcy})`
   );
 
+  // Track global scale for checkpoint stroke clamping
+  _stageScale = scale;
+
   // Keep badges exactly on their own tile centers and upright
   placed.forEach(t => {
     if (!t.labelGroup || !t.socket?.center) return;
@@ -267,7 +410,27 @@ function updateCamera() {
   });
 
   updateCheckpointMarkers();
+  updateCheckpointLook(); // keep thin yet visible at any zoom
 }
+
+function applyAutoRotate() {
+  if (!autoRotateOn) return;
+  if (!placed.length) return;
+
+  const last = placed[placed.length - 1];
+  if (!last?.socket) return;
+
+  // Angle of the last tile’s exit vector in world space
+  const globalExit = last.rot + last.socket.exitAngle; // radians
+
+  // We want exit pointing straight right (+X), so rotate scene by -globalExit
+  cameraRotation = -toDeg(globalExit);
+
+  // Fit after changing rotation
+  manualZoom = 1;
+  fitToScreen();    // (fitToScreen() would also work; updateCamera() already frames by bbox)
+}
+
 
 /* -----------------------------
    Load tiles (manifest + thumbs)
@@ -305,13 +468,29 @@ async function loadTiles() {
       if (!res.ok) throw new Error(`${item.file} ${res.status}`);
       const svgText = await res.text();
 
+      // keep a registry entry we can use for "Load"
+      tileRegistry[item.id] = {
+        svgText,
+        meta: item // {id, file, label, theme, stats, track}
+      };
+
       const wrapper = document.createElement("div");
       wrapper.className = "tile-thumb";
       wrapper.title = item.label;
 
       const thumb = stringToSVG(svgText);
       if (!thumb) throw new Error("SVG parse failed");
-      thumb.addEventListener("click", () => placeTile(svgText, item));
+      thumb.addEventListener("click", () => {
+        if (replaceMode && replaceTargetIndex !== null) {
+          if (replaceTargetIndex != null) {
+            removeSelectionOutline(placed[replaceTargetIndex]);
+          }
+          replaceTileAt(replaceTargetIndex, svgText, item);
+          exitReplaceMode();
+        } else {
+          placeTile(svgText, item);
+        }
+      });
       wrapper.appendChild(thumb);
 
       const label = document.createElement("div");
@@ -429,6 +608,190 @@ function placeTile(svgText, itemMeta) {
   renderMetaFromStage({ placed });
 }
 
+function buildPlacedFromSVG(svgText, itemMeta) {
+  const svg = stringToSVG(svgText);
+  if (!svg) return null;
+
+  const prefix = `t${nextId++}-`;
+  namespaceIds(svg, prefix);
+
+  const socket = readSocket(svg, prefix);
+  if (!socket) return null;
+
+  const goals = collectGoals(svg, prefix);
+  const g = createGroup();
+  g.setAttribute("data-prefix", prefix);
+  g.appendChild(svg);
+
+  return { g, prefix, tx:0, ty:0, rot:0, socket, goals, labelGroup:null, meta:itemMeta || null };
+}
+
+// recompute tx/ty/rot (and labels) for tiles [startIdx .. end], based on previous tile’s exit
+function relayoutFrom(startIdx) {
+  if (placed.length === 0) return;
+
+  for (let i = startIdx; i < placed.length; i++) {
+    const t = placed[i];
+
+    let tx, ty, rot;
+
+    if (i === 0) {
+      // drop the first at stage center so it’s stable
+      const cx = 2000, cy = 1500;
+      rot = 0;
+      const eRot = rotatePoint(t.socket.entry, rot);
+      tx = cx - eRot.x; ty = cy - eRot.y;
+    } else {
+      const prev = placed[i-1];
+      const prevExitGlobal = localToGlobal(prev, prev.socket.exit);
+      const prevExitAngleGlobal = prev.rot + prev.socket.exitAngle;
+      rot = prevExitAngleGlobal - t.socket.entryAngle;
+      const thisEntryRot = rotatePoint(t.socket.entry, rot);
+      tx = prevExitGlobal.x - thisEntryRot.x;
+      ty = prevExitGlobal.y - thisEntryRot.y;
+    }
+
+    t.tx = tx; t.ty = ty; t.rot = rot;
+    t.g.setAttribute("transform", `translate(${tx},${ty}) rotate(${toDeg(rot)})`);
+
+    // rebuild upright label
+    if (t.labelGroup) t.labelGroup.remove();
+    if (t.socket.center && t.meta) {
+      const pr = rotatePoint(t.socket.center, t.rot);
+      const gx = t.tx + pr.x, gy = t.ty + pr.y;
+
+      const padding = 8, fontSize = 44;
+      const textLen = (t.meta.label || t.meta.id).length;
+      const textWidth = textLen * fontSize * 0.6;
+      const rectW = textWidth + padding * 2;
+      const rectH = fontSize + padding * 2;
+
+      const lg = document.createElementNS("http://www.w3.org/2000/svg","g");
+      const rect = document.createElementNS("http://www.w3.org/2000/svg","rect");
+      rect.setAttribute("x", -rectW/2);
+      rect.setAttribute("y", -rectH/2);
+      rect.setAttribute("width", rectW);
+      rect.setAttribute("height", rectH);
+      rect.setAttribute("rx", 3); rect.setAttribute("ry", 3);
+      rect.setAttribute("fill", t.meta.theme === "dark" ? "#000" : "#fff");
+      rect.setAttribute("stroke", t.meta.theme === "dark" ? "#fff" : "#000");
+      rect.setAttribute("stroke-width", 0.5);
+      const text = document.createElementNS("http://www.w3.org/2000/svg","text");
+      text.setAttribute("text-anchor","middle");
+      text.setAttribute("font-size", fontSize);
+      text.setAttribute("y", fontSize/3);
+      text.setAttribute("fill", t.meta.theme === "dark" ? "#fff" : "#000");
+      text.setAttribute("font-family", "Oswald, sans-serif");
+      text.setAttribute("font-weight", "600");
+      text.textContent = t.meta.label || t.meta.id;
+
+      lg.append(rect, text);
+      lg.setAttribute("transform", `translate(${gx}, ${gy}) rotate(${-cameraRotation})`);
+      labelLayer.appendChild(lg);
+      t.labelGroup = lg;
+    }
+    // if this tile is currently the replace target, re-draw its outline
+    if (t._outline) {
+      addSelectionOutline(t);
+    }
+  }
+
+  updateCamera();
+  Stage.emit();
+}
+
+// main entry: replace one tile and relayout the rest
+function replaceTileAt(index, newSvgText, newMeta) {
+  if (index < 0 || index >= placed.length) return;
+
+  const old = placed[index];
+  // update tile counts
+  if (old.meta) {
+    const base = old.meta.id.replace(/-upp$/, "");
+    tileCounts[base] = Math.max(0, (tileCounts[base] || 0) - 1);
+    const frontId = base, backId = base + "-upp";
+    if (tileCounterEls[frontId]) tileCounterEls[frontId].textContent = tileCounts[base];
+    if (tileCounterEls[backId])  tileCounterEls[backId].textContent  = tileCounts[base];
+  }
+
+  const fresh = buildPlacedFromSVG(newSvgText, newMeta);
+  if (!fresh) { alert("That tile can’t be placed (missing markers)."); return; }
+
+  // increase new counts
+  const baseNew = fresh.meta.id.replace(/-upp$/, "");
+  tileCounts[baseNew] = (tileCounts[baseNew] || 0) + 1;
+  const frontIdN = baseNew, backIdN = baseNew + "-upp";
+  if (tileCounterEls[frontIdN]) tileCounterEls[frontIdN].textContent = tileCounts[baseNew];
+  if (tileCounterEls[backIdN])  tileCounterEls[backIdN].textContent  = tileCounts[baseNew];
+
+  // keep ordering in DOM: insert before the node after old (or append if last)
+  const nextSibling = placed[index+1]?.g || null;
+  stageRoot.insertBefore(fresh.g, nextSibling);
+
+  // swap in array (preserve index)
+  if (old.labelGroup) old.labelGroup.remove();
+  old.g.remove();
+  placed[index] = fresh;
+
+  // Fix checkpoints tied to this tile: keep only those whose key exists on the new tile
+  const validKeys = new Set(Object.keys(fresh.goals || {}));
+  const toRemove = [];
+  checkpoints.forEach((cp, ci) => {
+    if (cp.tileIdx === index && !validKeys.has(cp.key)) toRemove.push(ci);
+  });
+  // remove from end to keep indices stable
+  for (let i = toRemove.length - 1; i >= 0; i--) {
+    const cp = checkpoints[toRemove[i]];
+    cp.g.remove();
+    checkpoints.splice(toRemove[i], 1);
+  }
+
+  // relayout the replaced tile and everything after it
+  relayoutFrom(index);
+
+  // checkpts after replacement move automatically (update transform)
+  updateCheckpointMarkers();
+  updateCheckpointLook();
+
+  // update meta/stats UI
+  renderStats2FromStage(Stage);
+  renderMetaFromStage(Stage);
+}
+
+function addSelectionOutline(tile) {
+  removeSelectionOutline(tile);
+
+  // bbox in tile-local coords
+  const bbox = tile.g.getBBox();
+  const pad = 3;
+
+  // wrap in a <g> that copies the tile transform so it lines up
+  const wrap = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  wrap.setAttribute("transform", tile.g.getAttribute("transform") || "");
+  wrap.setAttribute("class", "selection-outline-wrap");
+
+  const r = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  r.setAttribute("x", bbox.x - pad);
+  r.setAttribute("y", bbox.y - pad);
+  r.setAttribute("width",  bbox.width  + pad*2);
+  r.setAttribute("height", bbox.height + pad*2);
+  r.setAttribute("rx", 10);
+  r.setAttribute("ry", 10);
+  r.setAttribute("class", "selection-outline");
+
+  wrap.appendChild(r);
+  (overlayLayer || stageRoot).appendChild(wrap); // fallback just in case
+
+  tile._outline = wrap;       // store the wrapper <g>
+}
+
+function removeSelectionOutline(tile) {
+  if (tile?._outline) {
+    tile._outline.remove();
+    tile._outline = null;
+  }
+}
+
 /* -----------------------------
    Checkpoints
    ----------------------------- */
@@ -458,12 +821,16 @@ function onStageClickForCheckpoint(e) {
   svgStage.style.cursor = "default";
 }
 
-function ensureCheckpointHaloFilter() {
-  if (svgStage.querySelector("#cpHalo")) return;
-  let defs = svgStage.querySelector("defs");
+function ensureCheckpointHaloFilter(targetSvg) {
+  const svg = targetSvg || svgStage;
+  if (!svg) return;
+
+  if (svg.querySelector("#cpHalo")) return;
+
+  let defs = svg.querySelector("defs");
   if (!defs) {
     defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-    svgStage.prepend(defs);
+    svg.prepend(defs);
   }
   const ns = "http://www.w3.org/2000/svg";
   const f = document.createElementNS(ns, "filter");
@@ -500,6 +867,7 @@ function ensureCheckpointHaloFilter() {
   defs.appendChild(f);
 }
 
+/* New checkpoint drawing with scale-aware strokes (no vector-effect) */
 function addCheckpoint(tileIdx, key, colorName, label) {
   const tile = placed[tileIdx];
   const pair = tile?.goals?.[key];
@@ -508,49 +876,82 @@ function addCheckpoint(tileIdx, key, colorName, label) {
   const aG = localToGlobal(tile, pair.a);
   const bG = localToGlobal(tile, pair.b);
   const col = CP_COLORS[colorName] || CP_COLORS.red;
+  const ns = "http://www.w3.org/2000/svg";
 
-  const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  const g = document.createElementNS(ns, "g");
   g.classList.add("checkpoint");
 
-  const core = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  // Keep the soft glow for colored parts
+  const core = document.createElementNS(ns, "g");
   core.setAttribute("filter", "url(#cpHalo)");
   g.appendChild(core);
 
-  const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-  line.setAttribute("x1", aG.x); line.setAttribute("y1", aG.y);
-  line.setAttribute("x2", bG.x); line.setAttribute("y2", bG.y);
-  line.setAttribute("stroke", col);
-  line.setAttribute("stroke-width", 8);
-  line.setAttribute("stroke-linecap", "square");
-  core.appendChild(line);
+  // COLORED LINE (scales with scene)
+  const coloredLine = document.createElementNS(ns, "line");
+  coloredLine.setAttribute("x1", aG.x); coloredLine.setAttribute("y1", aG.y);
+  coloredLine.setAttribute("x2", bG.x); coloredLine.setAttribute("y2", bG.y);
+  coloredLine.setAttribute("stroke", col);
+  coloredLine.setAttribute("stroke-linecap", "round");
+  core.appendChild(coloredLine);
 
+  // WHITE UNDERLAY behind the colored line (scales with scene; width clamped later)
+  const haloLine = document.createElementNS(ns, "line");
+  haloLine.setAttribute("x1", aG.x); haloLine.setAttribute("y1", aG.y);
+  haloLine.setAttribute("x2", bG.x); haloLine.setAttribute("y2", bG.y);
+  haloLine.setAttribute("stroke", "#fff");
+  haloLine.setAttribute("stroke-linecap", "round");
+  g.insertBefore(haloLine, core);
+
+  // Marker group at midpoint (counter-rotated elsewhere)
   const mid = { x: (aG.x + bG.x)/2, y: (aG.y + bG.y)/2 };
-  const markerG = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  const markerG = document.createElementNS(ns, "g");
   markerG.setAttribute("transform", `translate(${mid.x}, ${mid.y})`);
   core.appendChild(markerG);
 
-  const r = 32;
-  const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-  circle.setAttribute("r", r);
+  // WHITE RING behind the disk; width & radius adjusted by scale
+  const haloRing = document.createElementNS(ns, "circle");
+  haloRing.setAttribute("cx", 0);
+  haloRing.setAttribute("cy", 0);
+  haloRing.setAttribute("fill", "none");
+  haloRing.setAttribute("stroke", "#fff");
+  // width/radius set later
+  markerG.appendChild(haloRing);
+
+  // COLORED DISK
+  const baseR = 32;
+  const circle = document.createElementNS(ns, "circle");
+  circle.setAttribute("r", baseR);
   circle.setAttribute("cx", 0);
   circle.setAttribute("cy", 0);
   circle.setAttribute("fill", col);
   markerG.appendChild(circle);
 
-  const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
-  t.setAttribute("text-anchor", "middle");
-  t.setAttribute("font-size", 42);
-  t.setAttribute("y", 16);
-  t.setAttribute("fill", "#fff");
-  t.setAttribute("font-weight", "600");
-  t.setAttribute("font-family", FONT_OSWALD);
-  t.textContent = (label || "A").toUpperCase().slice(0, 2);
-  markerG.appendChild(t);
+  // LABEL (string value + text node)
+  const labelVal = (label || "A").toUpperCase().slice(0, 2);
+  const labelText = document.createElementNS(ns, "text");
+  labelText.setAttribute("text-anchor", "middle");
+  labelText.setAttribute("font-size", 42);
+  labelText.setAttribute("y", 16);
+  labelText.setAttribute("fill", "#fff");
+  labelText.setAttribute("font-weight", "600");
+  labelText.setAttribute("font-family", FONT_OSWALD);
+  labelText.textContent = labelVal;
+  markerG.appendChild(labelText);
 
   checkpointLayer.appendChild(g);
 
-  checkpoints.push({ g, tileIdx, key, aLocal: pair.a, bLocal: pair.b, color: colorName, label: t, markerG });
+  checkpoints.push({
+    g, tileIdx, key,
+    aLocal: pair.a, bLocal: pair.b,
+    color: colorName,
+    label: labelVal,           // <-- plain string for serialize/load
+    labelNode: labelText,      // <-- keep node separately for runtime
+    markerG,
+    coloredLine, haloLine, haloRing, circle, r: baseR
+  });
+
   updateCheckpointMarkers();
+  applyCheckpointLook(checkpoints[checkpoints.length - 1]);
   Stage.emit();
 }
 
@@ -566,11 +967,61 @@ function updateCheckpointMarkers() {
   checkpoints.forEach(cp => {
     const tile = placed[cp.tileIdx];
     if (!tile) return;
+
     const aG = localToGlobal(tile, cp.aLocal);
     const bG = localToGlobal(tile, cp.bLocal);
+
+    // move the two lines (white underlay + colored) with the tile
+    if (cp.haloLine) {
+      cp.haloLine.setAttribute("x1", aG.x); cp.haloLine.setAttribute("y1", aG.y);
+      cp.haloLine.setAttribute("x2", bG.x); cp.haloLine.setAttribute("y2", bG.y);
+    }
+    if (cp.coloredLine) {
+      cp.coloredLine.setAttribute("x1", aG.x); cp.coloredLine.setAttribute("y1", aG.y);
+      cp.coloredLine.setAttribute("x2", bG.x); cp.coloredLine.setAttribute("y2", bG.y);
+    }
+
+    // keep the badge centered and upright
     const mid = { x: (aG.x + bG.x)/2, y: (aG.y + bG.y)/2 };
-    cp.markerG.setAttribute("transform", `translate(${mid.x}, ${mid.y}) rotate(${angle})`);
+    if (cp.markerG) cp.markerG.setAttribute("transform", `translate(${mid.x}, ${mid.y}) rotate(${angle})`);
   });
+}
+
+// ---- Checkpoint look: thin, outside, zoom-stable ----
+function applyCheckpointLook(cp){
+  const scale = _stageScale || 1;
+
+  // Crossbar: keep your original feel
+  const COLORED_W_WORLD = 8;          // red/blue/green bar thickness (world units)
+  const EDGE_EXTRA_PX   = 1.2;        // white edge per side in on-screen pixels
+
+  // Ring: match the *visual* white edge (thinner than before)
+  const RING_MIN_PX     = 0.9;        // never let it vanish
+  const RING_GAP_PX     = 0.75;       // tiny gap so it never touches/cuts the disk
+
+  // ----- Crossbar widths -----
+  const coloredW = COLORED_W_WORLD;
+  cp.coloredLine.setAttribute("stroke-width", coloredW);
+
+  // White underlay = colored + 1.2px per side (converted to world units)
+  const haloW = coloredW + (2 * EDGE_EXTRA_PX / scale);
+  cp.haloLine.setAttribute("stroke-width", haloW);
+  cp.coloredLine.setAttribute("stroke-linecap", "round");
+  cp.haloLine.setAttribute("stroke-linecap", "round");
+
+  // ----- Ring width (pixel-anchored, thinner than before) -----
+  // Make the visible ring roughly the same thickness as the bar’s white edge,
+  // and never thicker than necessary at high zoom.
+  const ringW = Math.max(RING_MIN_PX, EDGE_EXTRA_PX) / scale;
+  cp.haloRing.setAttribute("stroke-width", ringW);
+
+  // Place ring fully *outside* the colored disk (plus a tiny gap).
+  const ringR = cp.r + ringW / 2 + (RING_GAP_PX / scale);
+  cp.haloRing.setAttribute("r", ringR);
+}
+
+function updateCheckpointLook(){
+  checkpoints.forEach(applyCheckpointLook);
 }
 
 /* -----------------------------
@@ -694,6 +1145,50 @@ function namespaceIds(svg, prefix){
   });
 }
 
+function exitReplaceMode() {
+  replaceMode = false;
+  replaceTargetIndex = null;
+  replaceBtn && replaceBtn.classList.remove("active");
+  svgStage.style.cursor = "default";
+  placed.forEach(p => p.g.classList.remove("replace-target"));
+}
+
+function onSaveStage() {
+  const data = serializeStage();
+  const name = (Stage.name || "Stage") + ".json";
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function serializeStage() {
+  // tiles as IDs in order
+  const tiles = placed.map(t => t.meta?.id).filter(Boolean);
+
+  const cps = checkpoints.map(cp => ({
+    tileIdx: cp.tileIdx,
+    key: cp.key,
+    color: cp.color,
+    label: String(cp.label || "A").toUpperCase().slice(0, 2)
+  }));
+
+  return {
+    version: 1,
+    name: Stage.name || "Custom Stage",
+    tiles,
+    checkpoints: cps,
+    sprintPoints: stageSprintPoints || 0,
+    komPoints: stageKOMPoints || 0,
+    camera: {
+      rotation: cameraRotation,   // degrees
+      zoom: manualZoom
+    }
+  };
+}
+
 /* -----------------------------
    Meta (setup & counters)
    ----------------------------- */
@@ -718,6 +1213,7 @@ function racingLengthForTile(tile) {
 function computeMetrics(stage) {
   const placed = stage.placed || [];
   let long = 0, medium = 0, turns = 0, track = 0, racing = 0;
+
   for (const t of placed) {
     const len = maxLengthForTileGoals(t);
     if (len === 6) long++;
@@ -726,6 +1222,10 @@ function computeMetrics(stage) {
     track  += len;
     racing += racingLengthForTile(t);
   }
+
+  // +1 if there is at least one tile (to match profile finish number)
+  if (placed.length > 0) racing += 1;
+
   return {
     total: placed.length,
     long, medium, turns, track, racing,
@@ -1095,7 +1595,7 @@ function renderStageProfile(stageSnap) {
   const finishX = clampX(flat[finishIdx].x1);
 
   marker(startX,  "S", 0, null, true);
-  marker(finishX, "F", totalSquares, null, true);
+  marker(finishX, "F", totalSquares + 1, null, true);
 
   // checkpoints
   (stageSnap.checkpoints || []).forEach(cp => {
@@ -1127,7 +1627,7 @@ function renderStageProfile(stageSnap) {
   const perCount = new Map(); // count -> { x, display, priority }
   for (const m of markersForNumbers) {
     const priority = (m.kind === "sf") ? 2 : 1;
-    const display  = (m.kind === "sf") ? m.count : (m.count + 1); // +1 ONLY for checkpoints
+    const display  = (m.kind === "sf") ? m.count : (m.count + 2); // +1 ONLY for checkpoints
     const current  = perCount.get(m.count);
     if (!current || priority > current.priority || (priority === current.priority && m.x < current.x)) {
       perCount.set(m.count, { x: m.x, display, priority });
@@ -1271,6 +1771,116 @@ const DL_STAGE_PAD  = 8;    // inner padding inside the stage block
 const DL_PROFILE_H  = 160;  // fixed slot for the profile image
 const DL_PROFILE_TITLE_GAP = 18; // space reserved above the image for the title
 const DL_STATS_H    = 28;   // single compact row (now houses Stage Points + Stage Stats)
+
+function onLoadStageClick() {
+  // Exit modes first (same behavior you wanted in Reset)
+  if (replaceMode) {
+    if (replaceTargetIndex != null) removeSelectionOutline(placed[replaceTargetIndex]);
+    exitReplaceMode();
+  }
+  if (cpPickMode) {
+    cpPickMode = false;
+    svgStage.style.cursor = "default";
+  }
+
+  const inp = document.createElement("input");
+  inp.type = "file";
+  inp.accept = "application/json";
+  inp.addEventListener("change", async () => {
+    const file = inp.files && inp.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      await loadStageFromData(data);
+    } catch (e) {
+      console.error("Load failed:", e);
+      alert("Could not load that file. See console for details.");
+    }
+  });
+  inp.click();
+}
+
+async function loadStageFromData(data) {
+  if (!data || typeof data !== "object" || !Array.isArray(data.tiles)) {
+    alert("Invalid stage file.");
+    return;
+  }
+
+  // Clear current stage (like Reset, but no confirm)
+  placed.forEach(p => p.g.remove());
+  placed.length = 0;
+  labelLayer.innerHTML = "";
+  checkpoints.forEach(cp => cp.g.remove());
+  checkpoints.length = 0;
+
+  Object.keys(tileCounts).forEach(k => tileCounts[k] = 0);
+  Object.keys(tileCounterEls).forEach(id => {
+    const base = id.replace(/-upp$/, "");
+    tileCounterEls[id].textContent = tileCounts[base] || 0;
+  });
+
+  // Rebuild tiles
+  let skipped = 0;
+  for (const id of data.tiles) {
+    const reg = tileRegistry[id];
+    if (!reg) { skipped++; continue; }
+    // Use same place flow so counters/labels/stats are right
+    placeTile(reg.svgText, reg.meta);
+  }
+
+  // Restore checkpoints (only those that still make sense)
+  if (Array.isArray(data.checkpoints)) {
+    data.checkpoints.forEach(cp => {
+      const ti = cp.tileIdx | 0;
+      const key = String(cp.key || "");
+      const color = String(cp.color || "red");
+      // handle legacy objects / DOM-node strings safely
+      const label = String(cp.label && cp.label.textContent ? cp.label.textContent : cp.label || "A")
+                      .toUpperCase()
+                      .slice(0, 2);
+
+      if (ti >= 0 && ti < placed.length) {
+        const tile = placed[ti];
+        if (tile && tile.goals && tile.goals[key]) {
+          addCheckpoint(ti, key, color, label);
+        }
+      }
+    });
+  }
+
+  // Restore stage meta
+  if (typeof data.name === "string" && data.name.trim()) {
+    Stage.name = data.name.trim();
+    const stageNameInput = document.getElementById("stage-name");
+    if (stageNameInput) stageNameInput.value = Stage.name;
+  }
+
+  stageSprintPoints = Number.isFinite(data.sprintPoints) ? data.sprintPoints : 0;
+  stageKOMPoints    = Number.isFinite(data.komPoints)    ? data.komPoints    : 0;
+  const inpSprints = document.getElementById("inp-sprints");
+  const inpKoms    = document.getElementById("inp-koms");
+  if (inpSprints) inpSprints.value = stageSprintPoints;
+  if (inpKoms)    inpKoms.value    = stageKOMPoints;
+
+  // Restore camera (rotation & zoom) if present — NO fitToScreen()
+  if (data.camera && Number.isFinite(data.camera.rotation)) {
+    cameraRotation = data.camera.rotation;
+  }
+  if (data.camera && Number.isFinite(data.camera.zoom) && data.camera.zoom > 0) {
+    manualZoom = data.camera.zoom;
+  }
+  updateCamera();
+
+  // Stats/UI refresh
+  Stage.emit();
+  renderStats2FromStage(Stage);
+  renderMetaFromStage(Stage);
+
+  if (skipped > 0) {
+    alert(`${skipped} tile(s) in the file were not found in this build and were skipped.`);
+  }
+}
 
 /* -----------------------------
    Export rendering (modules)
@@ -1719,6 +2329,9 @@ async function snapshotStageAsImageCROPPED() {
 
   const clone = src.cloneNode(true);
 
+  // Make sure the clone has the halo filter
+  ensureCheckpointHaloFilter(clone);
+
   // Hide helpers + keep Oswald
   const ns = 'http://www.w3.org/2000/svg';
   const style = document.createElementNS(ns, 'style');
@@ -1755,7 +2368,8 @@ async function snapshotStageAsImageCROPPED() {
   const nodes = [
     ...cam.querySelectorAll('#stage-root g[data-prefix] > svg'),
     ...cam.querySelectorAll('#label-layer > g'),
-    ...cam.querySelectorAll('#checkpoint-layer > g')
+    ...cam.querySelectorAll('#checkpoint-layer > g'),
+    ...cam.querySelectorAll('#checkpoint-layer [filter*="#cpHalo"]')
   ];
 
   let minX =  Infinity, minY =  Infinity, maxX = -Infinity, maxY = -Infinity;
@@ -1772,11 +2386,19 @@ async function snapshotStageAsImageCROPPED() {
 
     const toOuter = sctmOuter.inverse().multiply(sctmNode);
 
+    // Extra pad if this node (or its ancestors) use the checkpoint halo filter
+    const usesHalo = !!(
+      (n.getAttribute && (n.getAttribute('filter') || '').includes('#cpHalo')) ||
+      (n.closest && n.closest('[filter*="#cpHalo"]')) ||
+      (n.querySelector && n.querySelector('[filter*="#cpHalo"]')) // NEW: descendants
+    );
+    const extra = usesHalo ? 16 : 0;
+
     const corners = [
-      { x: bb.x,             y: bb.y },
-      { x: bb.x + bb.width,  y: bb.y },
-      { x: bb.x + bb.width,  y: bb.y + bb.height },
-      { x: bb.x,             y: bb.y + bb.height }
+      { x: bb.x - extra,             y: bb.y - extra },
+      { x: bb.x + bb.width + extra,  y: bb.y - extra },
+      { x: bb.x + bb.width + extra,  y: bb.y + bb.height + extra },
+      { x: bb.x - extra,             y: bb.y + bb.height + extra }
     ];
     for (const p of corners) {
       const X = toOuter.a * p.x + toOuter.c * p.y + toOuter.e;
