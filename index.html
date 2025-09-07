@@ -86,9 +86,11 @@
   <section class="build-area-wrapper">
     <div class="toolbar">
       <button id="undo-btn">Undo</button>
+      <button id="replace-btn">Replace</button>
       <button id="reset-btn">Reset</button>
       <button id="rotate-left-btn">⟲</button>
       <button id="rotate-right-btn">⟳</button>
+      <button id="auto-rotate-btn" class="tool-btn" title="Auto-rotate to last exit">⇢</button>
       <button id="zoom-in-btn">＋</button>
       <button id="zoom-out-btn">－</button>
       <button id="fit-btn" title="Fit to screen">Fit</button>
@@ -98,6 +100,7 @@
           <g id="stage-root"></g>        <!-- tiles -->
           <g id="label-layer"></g>       <!-- tile labels (stay upright) -->
           <g id="checkpoint-layer"></g>  <!-- checkpoints go here -->
+          <g id="overlay-layer" pointer-events="none"></g>
         </g>
       </svg>
   </section>
@@ -252,5 +255,4 @@
 
   <script src="script.js"></script>
 </body>
-
 </html>
